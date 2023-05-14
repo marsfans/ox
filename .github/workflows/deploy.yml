@@ -1,17 +1,39 @@
-name: Deploy
+name: Rust
+
 on:
   push:
-    tags:
-      - "v*"
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+env:
+  CARGO_TERM_COLOR: always
 
 jobs:
-  homebrew:
-    name: Bump Homebrew formula
+  build-linux:
     runs-on: ubuntu-latest
     steps:
-      - uses: mislav/bump-homebrew-formula-action@v1.7
-        if: "!contains(github.ref, '-')" # skip prereleases
-        with:
-          formula-name: ox
-        env:
-          COMMITTER_TOKEN: ${{ secrets.COMMITTER_TOKEN }}
+    - uses: actions/checkout@v2
+    - name: Build
+      run: |
+        cargo build --release
+        tree ./target
+    - name: Upload a Build Artifact
+      uses: actions/upload-artifact@v3.1.2
+      with:
+        name: ox-linux-amd64-0.2.7
+        path: ./rust/target/release/ox
+  build-windows:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build
+      run: |
+        cargo build --release
+        ls
+        tree ./target
+    - name: Upload a Build Artifact
+      uses: actions/upload-artifact@v3.1.2
+      with:
+        name: ox-windows-amd64-0.2.7
+        path: ./target/release/ox.exe
