@@ -22,7 +22,7 @@ jobs:
       uses: actions/upload-artifact@v3.1.2
       with:
         name: ox-linux-amd64-0.2.7
-        path: ./rust/target/release/ox
+        path: ./target/release/ox
   build-windows:
     runs-on: windows-latest
     steps:
